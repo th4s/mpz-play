@@ -1,20 +1,13 @@
 //! Multiplexer used in the TLSNotary protocol.
 
-use std::future::IntoFuture;
-
+use crate::Role;
 use futures::{
     future::{FusedFuture, FutureExt},
     AsyncRead, AsyncWrite, Future,
 };
 use serio::codec::Bincode;
-use tracing::error;
+use std::future::IntoFuture;
 use uid_mux::{yamux, FramedMux};
-
-#[derive(Debug, Clone, Copy)]
-pub enum Role {
-    Alice,
-    Bob,
-}
 
 /// Multiplexer supporting unique deterministic stream IDs.
 pub type Mux<Io> = yamux::Yamux<Io>;
@@ -45,7 +38,7 @@ impl MuxFuture {
             futures::select! {
                 res = fut => return res,
                 res = &mut self.0 => if let Err(e) = res {
-                    error!("mux error: {:?}", e);
+                    eprintln!("mux error: {:?}", e);
                 },
             }
         }

@@ -1,9 +1,12 @@
-[package]
-name = "mpz-play"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = [
+    "smoketest",
+    "common",
+    "template"
+]
+resolver = "2"
 
-[dependencies]
+[workspace.dependencies]
 mpz-core = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
 mpz-common = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
 mpz-circuits = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
@@ -20,7 +23,3 @@ serio = { version = "0.1", features = ["codec", "bincode"] }
 uid-mux = { version = "0.1", features = ["serio"] }
 tracing = "0.1"
 anyhow = "1"
-
-[[bin]]
-name = "smoketest"
-path = "src/bin/smoketest.rs"

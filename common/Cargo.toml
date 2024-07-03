@@ -1,0 +1,13 @@
+[package]
+name = "common"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { workspace = true, features = ["full"] }
+tokio-util = { workspace = true, features = ["full"] }
+futures.workspace = true
+serio = { workspace = true, features = ["codec", "bincode"] }
+uid-mux = { workspace = true, features = ["serio"] }
+anyhow.workspace = true
+
