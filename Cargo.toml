@@ -14,8 +14,13 @@ mpz-ole = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "
 mpz-share-conversion = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
 
 tokio = { version = "1", features = ["full"] }
+tokio-util = { version = "0.7", features = ["full"] }
 futures = "0.3"
 serio = { version = "0.1", features = ["codec", "bincode"] }
 uid-mux = { version = "0.1", features = ["serio"] }
 tracing = "0.1"
 anyhow = "1"
+
+[[bin]]
+name = "smoketest"
+path = "src/bin/smoketest.rs"
