@@ -1,6 +1,7 @@
 [workspace]
 members = [
-    "smoketest",
+    "01-smoketest",
+    "02-oblivious-transfer",
     "common",
     "template"
 ]
