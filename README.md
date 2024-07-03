@@ -7,7 +7,6 @@ which is library for secure multi-party computation (MPC).
   - [SecureComputation](https://securecomputation.org/)
   - [Secret Sharing MPC](https://eprint.iacr.org/2022/062)
   - [CO15 - Simple Oblivious Transfer](https://eprint.iacr.org/2015/267)
-  - [Scholl VOLE Primer](https://www.youtube.com/watch?v=ZfdXY_oLhSo)
   - [BIU MPC Lectures](https://www.youtube.com/playlist?list=PL8Vt-7cSFnw1F7bBFws2kWA-7JVFkqKTy)
 - [MPZ Overview](https://github.com/privacy-scaling-explorations/mpz/blob/dev/README.md)
 - [MPZ Design Considerations](https://github.com/privacy-scaling-explorations/mpz/blob/dev/DESIGN.md)
