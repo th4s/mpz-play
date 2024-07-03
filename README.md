@@ -5,7 +5,7 @@
 # MPZ Play
 
 This is a workshop to get familiar with [mpz](https://github.com/privacy-scaling-explorations/mpz),
-which is [PSE](https://pse.dev) library for secure multi-party computation (MPC).
+which is a [PSE](https://pse.dev) library for [secure multi-party computation](https://en.wikipedia.org/wiki/Secure_multi-party_computation) (MPC).
 
 ## Resources
 - Learning material:
