@@ -1,4 +1,9 @@
+<p align="center">
+    <img src="./mpc-ferris.png" width=1280 />
+</p>
+
 # MPZ Play
+
 This is a workshop to get familiar with [mpz](https://github.com/privacy-scaling-explorations/mpz),
 which is library for secure multi-party computation (MPC).
 
