@@ -1,7 +1,7 @@
 [workspace]
 members = [
-    "01-smoketest",
-    "02-oblivious-transfer",
+    "00-connect",
+    "01-oblivious-transfer",
     "common",
     "template"
 ]
