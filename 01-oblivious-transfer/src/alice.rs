@@ -1,9 +1,9 @@
-use common::{tcp_mux, Role, DEFAULT_ADDRESS};
+use common::{tcp_mux, Role, DEFAULT_LOCAL};
 
 #[tokio::main]
 async fn main() {
     // Open connection and poll it in the background.
-    let (future, mut ctrl) = tcp_mux(Role::Alice, DEFAULT_ADDRESS).await.unwrap();
+    let (future, mut ctrl) = tcp_mux(Role::Alice, DEFAULT_LOCAL).await.unwrap();
     let join_handle = tokio::spawn(future);
 
     // Your code

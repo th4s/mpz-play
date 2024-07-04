@@ -1,10 +1,10 @@
-use common::{tcp_mux, FramedUidMux, Role, DEFAULT_ADDRESS};
+use common::{tcp_mux, FramedUidMux, Role, DEFAULT_LOCAL};
 use serio::{stream::IoStreamExt, SinkExt};
 
 #[tokio::main]
 async fn main() {
     // Open connection and poll it in the background.
-    let (future, mut ctrl) = tcp_mux(Role::Alice, "192.168.178.63").await.unwrap();
+    let (future, mut ctrl) = tcp_mux(Role::Alice, DEFAULT_LOCAL).await.unwrap();
     let join_handle = tokio::spawn(future);
 
     // Your code

@@ -10,7 +10,7 @@ pub use mux::{MuxControl, MuxFuture};
 pub use uid_mux::FramedUidMux;
 
 /// The default address we use for all examples.
-pub const DEFAULT_ADDRESS: &str = "127.0.0.1:8083";
+pub const DEFAULT_LOCAL: &str = "127.0.0.1:8083";
 
 #[derive(Debug, Clone, Copy)]
 pub enum Role {
