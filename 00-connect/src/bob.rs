@@ -7,18 +7,15 @@ async fn main() {
     let (future, mut ctrl) = tcp_mux(Role::Bob, DEFAULT_LOCAL).await.unwrap();
     let join_handle = tokio::spawn(future);
 
-    // Your code
-    // ######################################################################
-
+    // Open a channel.
     let mut channel = ctrl.open_framed(b"1").await.unwrap();
 
+    // Wait for Alice to send her number, then increment and send it back.
     let mut received: u32 = channel.expect_next().await.unwrap();
     println!("Bob received: {received}");
-
     received += 1;
     channel.send(received).await.unwrap();
 
-    // ######################################################################
     // Properly close the connection.
     ctrl.mux_mut().close();
     join_handle.await.unwrap().unwrap();

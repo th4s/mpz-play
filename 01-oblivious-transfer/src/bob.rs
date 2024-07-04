@@ -6,10 +6,6 @@ async fn main() {
     let (future, mut ctrl) = tcp_mux(Role::Bob, DEFAULT_LOCAL).await.unwrap();
     let join_handle = tokio::spawn(future);
 
-    // Your code
-    // ######################################################################
-
-    // ######################################################################
     // Properly close the connection.
     ctrl.mux_mut().close();
     join_handle.await.unwrap().unwrap();

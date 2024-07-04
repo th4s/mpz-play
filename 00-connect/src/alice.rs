@@ -7,17 +7,14 @@ async fn main() {
     let (future, mut ctrl) = tcp_mux(Role::Alice, DEFAULT_LOCAL).await.unwrap();
     let join_handle = tokio::spawn(future);
 
-    // Your code
-    // ######################################################################
-
+    // Open a channel.
     let mut channel = ctrl.open_framed(b"1").await.unwrap();
 
+    // Send a number to Bob and wait for Bob's number.
     channel.send(42_u32).await.unwrap();
     let received: u32 = channel.expect_next().await.unwrap();
-
     println!("Alice received: {received}");
 
-    // ######################################################################
     // Properly close the connection.
     ctrl.mux_mut().close();
     join_handle.await.unwrap().unwrap();
