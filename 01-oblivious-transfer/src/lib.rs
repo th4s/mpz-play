@@ -14,5 +14,3 @@
 //! [mpz_ot::chou_orlandi::Receiver] for this. Then perform the OT by calling
 //! [mpz_ot::OTSender::send] or [mpz_ot::OTReceiver::receive]. For creating messages that can be
 //! sent, you can use [mpz_core::Block].
-//!
-//! In the end properly close the connection.
