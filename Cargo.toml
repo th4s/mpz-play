@@ -17,6 +17,8 @@ mpz-ot = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b
 mpz-ole = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
 mpz-share-conversion = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
 
+common.path = "./common/"
+
 tokio = { version = "1", features = ["full"] }
 tokio-util = { version = "0.7", features = ["full"] }
 futures = "0.3"
