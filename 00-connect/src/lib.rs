@@ -1,5 +1,3 @@
-//! Put common code here that is used by both Alice and Bob.
-//!
 //! In this unit we want to run a simple connection test. Alice wants to open a multiplexed TCP
 //! connection with Bob that automatically de-/serializes sent/received messages. Bob is just
 //! listening on some port and awaiting Alice's incoming connection.

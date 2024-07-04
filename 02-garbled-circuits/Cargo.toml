@@ -5,6 +5,10 @@ edition = "2021"
 
 [dependencies]
 common.workspace = true
+mpz-common.workspace = true
+mpz-ot.workspace = true
+mpz-garble.workspace = true
+mpz-circuits.workspace = true
 
 futures = "0.3"
 anyhow = "1"

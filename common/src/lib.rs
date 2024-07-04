@@ -7,7 +7,7 @@ use tokio_util::compat::TokioAsyncReadCompatExt;
 mod mux;
 
 pub use mux::{MuxControl, MuxFuture};
-pub use uid_mux::{yamux::YamuxCtrl, FramedMux, FramedUidMux};
+pub use uid_mux::{yamux::YamuxCtrl, FramedUidMux};
 
 /// The default address we use for all examples.
 pub const DEFAULT_LOCAL: &str = "127.0.0.1:8083";

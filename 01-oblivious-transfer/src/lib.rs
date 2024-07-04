@@ -1,5 +1,3 @@
-//! Put common code here that is used by both Alice and Bob.
-//!
 //! In this unit we want to do an oblivious transfer (OT). Alice will be the OT sender and Bob will
 //! be the OT receiver.
 //!
