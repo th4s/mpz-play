@@ -2398,21 +2398,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "yao-millionaire"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "common",
- "futures",
- "mpz-circuits",
- "mpz-common",
- "mpz-garble",
- "mpz-ot",
- "serio",
- "tokio",
-]
-
-[[package]]
 name = "zerocopy"
 version = "0.7.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
