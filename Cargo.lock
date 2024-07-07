@@ -2017,6 +2017,8 @@ dependencies = [
  "anyhow",
  "common",
  "futures",
+ "mpz-common",
+ "mpz-core",
  "mpz-ole",
  "mpz-ot",
  "mpz-share-conversion",

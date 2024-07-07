@@ -19,12 +19,14 @@ use mpz_common::executor::MTExecutor;
 use mpz_common::{Allocate, Preprocess};
 use mpz_garble::protocol::deap::DEAPThread;
 use mpz_garble::{config::Role as DEAPRole, DecodePrivate, Execute, Memory};
-use mpz_ot::chou_orlandi::{
-    Receiver as BaseReceiver, ReceiverConfig as BaseReceiverConfig, Sender as BaseSender,
-    SenderConfig as BaseSenderConfig,
+use mpz_ot::{
+    chou_orlandi::{
+        Receiver as BaseReceiver, ReceiverConfig as BaseReceiverConfig, Sender as BaseSender,
+        SenderConfig as BaseSenderConfig,
+    },
+    kos::{Receiver, ReceiverConfig, Sender, SenderConfig},
+    OTSetup,
 };
-use mpz_ot::kos::{Receiver, ReceiverConfig, Sender, SenderConfig};
-use mpz_ot::OTSetup;
 
 /// Sets up a VM for garbled circuits.
 ///
