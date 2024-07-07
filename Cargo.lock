@@ -2019,6 +2019,7 @@ dependencies = [
  "futures",
  "mpz-common",
  "mpz-core",
+ "mpz-fields",
  "mpz-ole",
  "mpz-ot",
  "mpz-share-conversion",

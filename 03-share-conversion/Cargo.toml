@@ -11,6 +11,7 @@ mpz-ole.workspace = true
 mpz-share-conversion.workspace = true
 mpz-common.workspace = true
 mpz-core.workspace = true
+mpz-fields.workspace = true
 
 futures = "0.3"
 anyhow = "1"
