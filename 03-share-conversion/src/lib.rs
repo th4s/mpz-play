@@ -4,7 +4,7 @@
 //!
 //! To achieve that, depending on your role instantiate an [`mpz_ole::rot::OLESender`] or an
 //! [`mpz_ole::rot::OLEReceiver`]. They can be used for creating an
-//! [`mpz_share_conversion::ShareConversionSender`]/[mpz_share_conversion::ShareConversionReceiver].
+//! [`mpz_share_conversion::ShareConversionSender`]/[`mpz_share_conversion::ShareConversionReceiver`].
 //! Then you can use [`mpz_share_conversion::AdditiveToMultiplicative`] to convert the shared sum
 //! into a shared product and [`mpz_share_conversion::MultiplicativeToAdditive`] to convert it back
 //! again. In the end check that both sums are equal by sending over the missing summands to each

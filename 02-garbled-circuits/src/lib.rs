@@ -6,8 +6,8 @@
 //!
 //! After setting up our connection and creating an executor we can use [`setup_garble`] to
 //! instantiate a VM for garbled circuits. Using [`Memory`] you can define inputs and outputs. You
-//! will need [`Memory::new_private_input`], [Memory::new_blind_input], [Memory::new_output]. Do
-//! not forget to also assign a value for the private inputs with [Memory::assign].
+//! will need [`Memory::new_private_input`], [`Memory::new_blind_input`], [`Memory::new_output`]. Do
+//! not forget to also assign a value for the private inputs with [`Memory::assign`].
 //!
 //! After that the [`mpz_circuits::circuits::AES128`] circuit can be used and you should be able
 //! to call [`Execute::execute`] and make use of [`DecodePrivate`] so that only Alice gets to see
@@ -82,7 +82,7 @@ pub async fn setup_garble(
     .unwrap();
 
     // Instantiate a vm for garbled circuits.
-    let context3 = executor.new_thread().await?;
+    let context3 = executor.few_thread().await?;
     let garble_vm = DEAPThread::new(deap_role, [0; 32], context3, sender, receiver);
 
     Ok(garble_vm)

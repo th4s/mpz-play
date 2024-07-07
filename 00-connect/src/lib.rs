@@ -8,8 +8,8 @@
 //! [`common::FramedUidMux::open_framed`] which is implemented by [`common::MuxControl`].
 //!
 //! To check that you set up the connection correctly, Alice should send some number to Bob. Bob
-//! increments it by one and sends it back to Alice. For sending you can use [serio::SinkExt::send]
-//! and for receiving it is [serio::stream::IoStreamExt::expect_next] which is both implemented by
+//! increments it by one and sends it back to Alice. For sending you can use [`serio::SinkExt::send`]
+//! and for receiving it is [`serio::stream::IoStreamExt::expect_next`] which is both implemented by
 //! the channel you just opened.
 //!
 //! After you are done you should make sure to properly close the connection on both sides. This
