@@ -78,11 +78,10 @@ pub async fn setup_garble(
             receiver.setup(&mut context2).await?;
             receiver.preprocess(&mut context2).await
         }
-    )
-    .unwrap();
+    )?;
 
     // Instantiate a vm for garbled circuits.
-    let context3 = executor.few_thread().await?;
+    let context3 = executor.new_thread().await?;
     let garble_vm = DEAPThread::new(deap_role, [0; 32], context3, sender, receiver);
 
     Ok(garble_vm)
