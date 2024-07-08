@@ -3,7 +3,7 @@ members = [
     "00-connect",
     "01-oblivious-transfer",
     "02-garbled-circuits",
-    "03-share-conversion",
+    "03-finite-fields",
     "common",
     "template"
 ]
