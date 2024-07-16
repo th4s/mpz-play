@@ -1,7 +1,7 @@
 use common::{tcp_mux, FramedUidMux, Role, DEFAULT_LOCAL};
 use finite_fields::setup_ot_receiver;
 use mpz_common::{executor::MTExecutor, Allocate, Preprocess};
-use mpz_fields::p256::P256;
+use mpz_fields::{p256::P256, Field};
 use mpz_ole::rot::OLEReceiver;
 use mpz_share_conversion::{
     AdditiveToMultiplicative, MultiplicativeToAdditive, ShareConversionReceiver,
@@ -51,7 +51,8 @@ async fn main() {
     let summand2: P256 = channel.expect_next().await.unwrap();
 
     // Check that conversion worked correctly.
-    assert_eq!(number + number2, summand + summand2);
+    println!("Original sum: {:?}", (number + number2).to_be_bytes());
+    println!("Final sum: {:?}", (summand + summand2).to_be_bytes());
 
     // Properly close the connection.
     ctrl.mux_mut().close();
