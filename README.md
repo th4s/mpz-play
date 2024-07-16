@@ -13,6 +13,7 @@ Learning MPC:
 - [SecureComputation](https://securecomputation.org/)
 - [BIU MPC Lectures](https://www.youtube.com/playlist?list=PL8Vt-7cSFnw1F7bBFws2kWA-7JVFkqKTy)
 - [CO15 - Simple Oblivious Transfer](https://eprint.iacr.org/2015/267)
+- [MASCOT](https://eprint.iacr.org/2016/505)
 
 MPZ library:
 - [MPZ Overview](https://github.com/privacy-scaling-explorations/mpz/blob/dev/README.md)
