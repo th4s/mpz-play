@@ -2,8 +2,8 @@
 members = [
     "00-connect",
     "01-oblivious-transfer",
-    "02-garbled-circuits",
-    "03-finite-fields",
+    "02-finite-fields",
+    "03-garbled-circuits",
     "common",
     "template"
 ]
