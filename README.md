@@ -32,8 +32,9 @@ For example to complete lesson `00-connect`, you follow the instructions in
 `00-connect/src/lib.rs`. Then in two different terminals run
 
 ```sh
-cargo run -p connect --bin alice
-cargo run -p connect --bin bob
+cd 00-connect
+cargo run --bin alice
+cargo run --bin bob
 ```
 
 Since we use a TCP connection for connecting `Alice` and `Bob`, you can work
