@@ -1,33 +1,30 @@
-use common::{tcp_mux, Role, DEFAULT_LOCAL};
-use mpz_common::executor::MTExecutor;
+use common::{tcp_connect, Role, DEFAULT_LOCAL};
+use mpz_common::executor::STExecutor;
 use mpz_ot::{
     chou_orlandi::{Receiver, ReceiverConfig},
     OTReceiver, OTSetup,
 };
+use serio::codec::{Bincode, Codec};
 
 #[tokio::main]
 async fn main() {
-    // Open connection and poll it in the background.
-    let (future, mut ctrl) = tcp_mux(Role::Bob, DEFAULT_LOCAL).await.unwrap();
-    let join_handle = tokio::spawn(future);
+    // Open a connection.
+    let tcp = tcp_connect(Role::Bob, DEFAULT_LOCAL).await.unwrap();
+    let channel = Bincode::default().new_framed(tcp);
 
-    // Create an executor and spawn a context.
-    let mut executor = MTExecutor::new(ctrl.clone(), 32);
-    let mut context = executor.new_thread().await.unwrap();
+    // Create an executor.
+    let mut executor = STExecutor::new(channel);
 
     // Create an OT receiver and set it up.
-    let receiver_config = ReceiverConfig::builder().build().unwrap();
+    let receiver_config = ReceiverConfig::default();
     let mut receiver = Receiver::new(receiver_config);
-    receiver.setup(&mut context).await.unwrap();
 
-    // Create a choice.
+    receiver.setup(&mut executor).await.unwrap();
+
+    // Make a choice.
     let choice = true;
 
     // Receive OTs from Alice.
-    let output = receiver.receive(&mut context, &[choice]).await.unwrap();
+    let output = receiver.receive(&mut executor, &[choice]).await.unwrap();
     println!("Received from Alice: {:?}", output.msgs.first().unwrap());
-
-    // Properly close the connection.
-    ctrl.mux_mut().close();
-    join_handle.await.unwrap().unwrap();
 }

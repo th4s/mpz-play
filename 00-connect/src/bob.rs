@@ -1,22 +1,20 @@
-use common::{tcp_mux, FramedUidMux, Role, DEFAULT_LOCAL};
-use serio::{stream::IoStreamExt, SinkExt};
+use common::{tcp_connect, Role, DEFAULT_LOCAL};
+use serio::{
+    codec::{Bincode, Codec},
+    stream::IoStreamExt,
+    SinkExt,
+};
 
 #[tokio::main]
 async fn main() {
-    // Open connection and poll it in the background.
-    let (future, mut ctrl) = tcp_mux(Role::Bob, DEFAULT_LOCAL).await.unwrap();
-    let join_handle = tokio::spawn(future);
-
-    // Open a channel.
-    let mut channel = ctrl.open_framed(b"1").await.unwrap();
+    // Open a connection.
+    let tcp = tcp_connect(Role::Bob, DEFAULT_LOCAL).await.unwrap();
+    let mut channel = Bincode::default().new_framed(tcp);
 
     // Wait for Alice to send her number, then increment and send it back.
     let mut received: u32 = channel.expect_next().await.unwrap();
     println!("Bob received: {received}");
+
     received += 1;
     channel.send(received).await.unwrap();
-
-    // Properly close the connection.
-    ctrl.mux_mut().close();
-    join_handle.await.unwrap().unwrap();
 }

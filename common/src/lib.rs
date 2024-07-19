@@ -1,13 +1,10 @@
 use anyhow::Error as Anyhow;
-use mux::attach_mux;
-use tokio::net::TcpSocket;
-use tokio::time::{sleep, Duration};
+use futures::{AsyncRead, AsyncWrite};
+use tokio::{
+    net::TcpSocket,
+    time::{sleep, Duration},
+};
 use tokio_util::compat::TokioAsyncReadCompatExt;
-
-mod mux;
-
-pub use mux::{MuxControl, MuxFuture};
-pub use uid_mux::{yamux::YamuxCtrl, FramedUidMux};
 
 /// The default address we use for all examples.
 pub const DEFAULT_LOCAL: &str = "127.0.0.1:8083";
@@ -19,14 +16,14 @@ pub enum Role {
     Bob,
 }
 
-/// Opens a multiplexed TCP connection.
+/// Opens a TCP connection.
 ///
-/// Depending on the `role` either listens or connects to `address`. Returns a [`MuxFuture`] which
-/// has to be continuously polled and a [`MuxControl`], which allows to open new channels.
-pub async fn tcp_mux(
+/// Depending on the `role` either listens or connects to `address`.
+/// Returns a tcp stream that implements [`AsyncRead`] and [`AsyncWrite`].
+pub async fn tcp_connect(
     role: Role,
     address: impl AsRef<str>,
-) -> Result<(MuxFuture, MuxControl), Anyhow> {
+) -> Result<impl AsyncRead + AsyncWrite, Anyhow> {
     let addr = address.as_ref().parse()?;
 
     let tcp_stream = match role {
@@ -47,11 +44,11 @@ pub async fn tcp_mux(
         }
     };
 
-    Ok(attach_mux(tcp_stream.compat(), role))
+    Ok(tcp_stream.compat())
 }
 
-/// Opens a multiplexed WebRTC datachannel.
-pub async fn webrtc_mux(_role: Role) -> Result<(MuxFuture, MuxControl), Anyhow> {
+/// Opens a WebRTC datachannel.
+pub async fn webrtc(_role: Role) -> Result<(), Anyhow> {
     todo!()
 }
 
