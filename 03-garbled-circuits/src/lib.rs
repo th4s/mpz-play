@@ -14,9 +14,8 @@
 //! the output.
 
 use anyhow::Error as Anyhow;
-use common::{MuxControl, Role};
-use mpz_common::executor::MTExecutor;
-use mpz_common::{Allocate, Preprocess};
+use common::Role;
+use mpz_common::{Allocate, Context, Preprocess};
 use mpz_garble::protocol::deap::DEAPThread;
 use mpz_garble::{config::Role as DEAPRole, DecodePrivate, Execute, Memory};
 use mpz_ot::{
@@ -33,11 +32,11 @@ use mpz_ot::{
 /// # Arguments
 ///
 /// * `role` - Set up the vm for either Alice or Bob.
-/// * `executor` - An executor for creating contexts.
+/// * `context` - A context for IO.
 /// * `ot_count` - How many OTs to set up.
 pub async fn setup_garble(
     role: Role,
-    executor: &mut MTExecutor<MuxControl>,
+    mut context: impl Context,
     ot_count: usize,
 ) -> Result<impl Memory + Execute + DecodePrivate, Anyhow> {
     // Create base OT sender and receiver.
@@ -54,13 +53,6 @@ pub async fn setup_garble(
     let receiver_config = ReceiverConfig::builder().build()?;
     let mut receiver = Receiver::new(receiver_config, base_sender);
 
-    let mut context1 = executor.new_thread().await?;
-    let mut context2 = executor.new_thread().await?;
-
-    if let Role::Bob = role {
-        std::mem::swap(&mut context1, &mut context2);
-    }
-
     let deap_role = match role {
         Role::Alice => DEAPRole::Leader,
         Role::Bob => DEAPRole::Follower,
@@ -69,20 +61,23 @@ pub async fn setup_garble(
     sender.alloc(ot_count);
     receiver.alloc(ot_count);
 
-    tokio::try_join!(
-        async {
-            sender.setup(&mut context1).await?;
-            sender.preprocess(&mut context1).await
-        },
-        async {
-            receiver.setup(&mut context2).await?;
-            receiver.preprocess(&mut context2).await
-        }
-    )?;
+    if let Role::Alice = role {
+        sender.setup(&mut context).await?;
+        sender.preprocess(&mut context).await?;
+    } else {
+        receiver.setup(&mut context).await?;
+        receiver.preprocess(&mut context).await?;
+    }
 
-    // Instantiate a vm for garbled circuits.
-    let context3 = executor.new_thread().await?;
-    let garble_vm = DEAPThread::new(deap_role, [0; 32], context3, sender, receiver);
+    if let Role::Bob = role {
+        sender.setup(&mut context).await?;
+        sender.preprocess(&mut context).await?;
+    } else {
+        receiver.setup(&mut context).await?;
+        receiver.preprocess(&mut context).await?;
+    }
 
-    Ok(garble_vm)
+    Ok(DEAPThread::new(
+        deap_role, [0; 32], context, sender, receiver,
+    ))
 }

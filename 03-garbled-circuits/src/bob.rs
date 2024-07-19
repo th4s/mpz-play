@@ -1,19 +1,19 @@
-use common::{tcp_mux, Role, DEFAULT_LOCAL};
+use common::{tcp_connect, Role, DEFAULT_LOCAL};
 use garbled_circuits::setup_garble;
 use mpz_circuits::circuits::AES128;
-use mpz_common::executor::MTExecutor;
-use mpz_garble::DecodePrivate;
-use mpz_garble::{Execute, Memory};
+use mpz_common::executor::STExecutor;
+use mpz_garble::{DecodePrivate, Execute, Memory};
+use serio::codec::{Bincode, Codec};
 
 #[tokio::main]
 async fn main() {
-    // Open connection and poll it in the background.
-    let (future, mut ctrl) = tcp_mux(Role::Bob, DEFAULT_LOCAL).await.unwrap();
-    let join_handle = tokio::spawn(future);
+    // Open a connection.
+    let tcp = tcp_connect(Role::Bob, DEFAULT_LOCAL).await.unwrap();
+    let channel = Bincode::default().new_framed(tcp);
 
     // Create an executor and use it to instantiate a vm for garbled circuits.
-    let mut executor = MTExecutor::new(ctrl.clone(), 32);
-    let mut garble_vm = setup_garble(Role::Bob, &mut executor, 256).await.unwrap();
+    let executor = STExecutor::new(channel);
+    let mut garble_vm = setup_garble(Role::Bob, executor, 256).await.unwrap();
 
     // Define input and output types.
     let key = garble_vm.new_blind_input::<[u8; 16]>("key").unwrap();
@@ -42,8 +42,4 @@ async fn main() {
 
     // Send output information to Alice.
     garble_vm.decode_blind(&[ciphertext]).await.unwrap();
-
-    // Properly close the connection.
-    ctrl.mux_mut().close();
-    join_handle.await.unwrap().unwrap();
 }

@@ -1013,6 +1013,7 @@ dependencies = [
  "mpz-ot",
  "serio",
  "tokio",
+ "uid-mux",
 ]
 
 [[package]]
