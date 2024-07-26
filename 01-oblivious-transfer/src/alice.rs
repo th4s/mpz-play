@@ -11,7 +11,7 @@ use serio::codec::{Bincode, Codec};
 async fn main() {
     // Open a connection.
     let tcp = tcp_connect(Role::Alice, DEFAULT_LOCAL).await.unwrap();
-    let channel = Bincode::default().new_framed(tcp);
+    let channel = Bincode.new_framed(tcp);
 
     // Create an executor.
     let mut executor = STExecutor::new(channel);

@@ -9,7 +9,7 @@ use serio::{
 async fn main() {
     // Open a connection.
     let tcp = tcp_connect(Role::Alice, DEFAULT_LOCAL).await.unwrap();
-    let mut channel = Bincode::default().new_framed(tcp);
+    let mut channel = Bincode.new_framed(tcp);
 
     // Send a number to Bob and wait for Bob's number.
     channel.send(42_u32).await.unwrap();
