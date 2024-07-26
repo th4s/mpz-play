@@ -5,7 +5,7 @@ use serio::codec::{Bincode, Codec};
 async fn main() {
     // Open a connection.
     let tcp = tcp_connect(Role::Bob, DEFAULT_LOCAL).await.unwrap();
-    let _channel = Bincode::default().new_framed(tcp);
+    let _channel = Bincode.new_framed(tcp);
 
     // Create an executor and setup OT.
 

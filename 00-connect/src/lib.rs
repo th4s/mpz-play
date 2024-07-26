@@ -4,7 +4,7 @@
 //!
 //! Luckily we already prepared some tooling to simplify the IO setup for you. In
 //! [`common::tcp_connect`] you can find a function to easily set up said TCP connection.
-//! Instantiating a  [`serio::codec::Bincode`]  and wrapping the TCP connection with
+//! Instantiating a [`serio::codec::Bincode`] and wrapping the TCP connection with
 //! [serio::codec::Codec::new_framed] allows you to open a channel.
 //!
 //! To check that you set up the connection correctly, Alice should send some number to Bob. Bob
