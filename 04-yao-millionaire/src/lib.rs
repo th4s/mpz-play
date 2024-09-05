@@ -24,7 +24,7 @@ mod tests {
     fn test_comparator() {
         let circuit = parse_lt_comparator(COMPARATOR_FILENAME).unwrap();
 
-        let is_bob_richer_or_as_rich = |alice: u32, bob: u32| {
+        let is_bob_richer = |alice: u32, bob: u32| {
             let wealth_alice: u32 = alice;
             let wealth_bob: u32 = bob;
 
@@ -33,15 +33,15 @@ mod tests {
 
         #[allow(clippy::bool_assert_comparison)]
         {
-            assert_eq!(true, is_bob_richer_or_as_rich(0, 1));
-            assert_eq!(true, is_bob_richer_or_as_rich(0, u32::MAX));
-            assert_eq!(true, is_bob_richer_or_as_rich(1_000_000, 1_000_001));
-            assert_eq!(true, is_bob_richer_or_as_rich(999_999, 1_000_000));
+            assert_eq!(true, is_bob_richer(0, 1));
+            assert_eq!(true, is_bob_richer(0, u32::MAX));
+            assert_eq!(true, is_bob_richer(1023, 1024));
+            assert_eq!(true, is_bob_richer(1024, 1025));
 
-            assert_eq!(false, is_bob_richer_or_as_rich(0, 0));
-            assert_eq!(false, is_bob_richer_or_as_rich(100, 100));
-            assert_eq!(false, is_bob_richer_or_as_rich(2_000_000, 1_000_000));
-            assert_eq!(false, is_bob_richer_or_as_rich(u32::MAX, u32::MAX - 1));
+            assert_eq!(false, is_bob_richer(2, 0));
+            assert_eq!(false, is_bob_richer(100, 100));
+            assert_eq!(false, is_bob_richer(2_000_000, 1_000_000));
+            assert_eq!(false, is_bob_richer(u32::MAX, u32::MAX - 1));
         }
     }
 }
