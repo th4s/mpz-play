@@ -1,7 +1,32 @@
-use anyhow::Result as Anyhow;
-use mpz_circuits::{types::ValueType, Circuit};
+use std::sync::Arc;
 
-pub fn parse_lt_comparator(filename: impl AsRef<str>) -> Anyhow<Circuit> {
+use anyhow::{anyhow, Result as Anyhow};
+use mpz_circuits::{trace, types::ValueType, Circuit, CircuitBuilder};
+
+pub fn millionaire_circuit() -> Anyhow<Circuit> {
+    let lt_comparator = parse_lt_comparator(COMPARATOR_FILENAME)?;
+    let lt_comparator = Arc::new(lt_comparator);
+
+    let builder = CircuitBuilder::new();
+    let a = builder.add_input::<u32>();
+    let b = builder.add_input::<u32>();
+
+    let mut outputs = builder.append(&lt_comparator.clone(), &[a.into(), b.into()])?;
+    let c = outputs
+        .pop()
+        .ok_or(anyhow!("Unable to pop circuit output"))?;
+
+    builder.add_output(c);
+
+    todo!()
+}
+
+#[trace]
+fn bitand(a: bool, b: bool) -> bool {
+    a & b
+}
+
+fn parse_lt_comparator(filename: impl AsRef<str>) -> Anyhow<Circuit> {
     let circuit = Circuit::parse(
         filename.as_ref(),
         &[ValueType::U32, ValueType::U32],
@@ -13,12 +38,12 @@ pub fn parse_lt_comparator(filename: impl AsRef<str>) -> Anyhow<Circuit> {
     Ok(circuit)
 }
 
+const COMPARATOR_FILENAME: &str = "./32-bit_less-than-comparator.txt";
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use mpz_circuits::evaluate;
-
-    const COMPARATOR_FILENAME: &str = "./32-bit_less-than-comparator.txt";
 
     #[test]
     fn test_comparator() {
