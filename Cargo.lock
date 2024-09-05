@@ -2653,6 +2653,7 @@ dependencies = [
  "anyhow",
  "common",
  "futures",
+ "mpz-circuits",
  "serio",
  "tokio",
 ]
