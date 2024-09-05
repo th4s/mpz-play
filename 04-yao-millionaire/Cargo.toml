@@ -1,0 +1,20 @@
+[package]
+name = "yao-millionaire"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+common.workspace = true
+
+futures = "0.3"
+anyhow = "1"
+serio = { version = "0.1", features = ["codec", "bincode"] }
+tokio = { version = "1", features = ["full"] }
+
+[[bin]]
+name = "alice"
+path = "src/alice.rs"
+
+[[bin]]
+name = "bob"
+path = "src/bob.rs"
