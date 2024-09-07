@@ -16,7 +16,7 @@ mpz-fields.workspace = true
 futures.workspace = true
 anyhow.workspace = true
 serio.workspace = true
-tokio.workspace = true
+tokio = { workspace = true, features = ["full"] }
 
 [[bin]]
 name = "alice"

@@ -10,5 +10,4 @@ futures.workspace = true
 serio = { workspace = true, features = ["codec", "bincode"] }
 uid-mux = { workspace = true, features = ["serio"] }
 anyhow.workspace = true
-matchbox_socket.workspace = true
 

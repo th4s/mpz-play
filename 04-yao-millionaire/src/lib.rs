@@ -1,5 +1,5 @@
 use anyhow::{anyhow, Result as Anyhow};
-use common::Role;
+use matchbox_socket::{MessageLoopFuture, WebRtcSocket};
 use mpz_circuits::{types::ValueType, Circuit, CircuitBuilder};
 use mpz_common::{Allocate, Context, Preprocess};
 use mpz_garble::protocol::deap::DEAPThread;
@@ -13,6 +13,19 @@ use mpz_ot::{
     OTSetup,
 };
 use std::sync::Arc;
+
+// The default address for the matchbox signaling server.
+const DEFAULT_MATCHBOX: &str = "ws://localhost:3536/";
+
+// The bristol circuit file for the u32-comparator.
+const COMPARATOR_FILENAME: &str = "./32-bit_less-than-comparator.txt";
+
+/// The role of the party, either `Alice` or `Bob`.
+#[derive(Debug, Clone, Copy)]
+pub enum Role {
+    Alice,
+    Bob,
+}
 
 /// Sets up a VM for garbled circuits.
 ///
@@ -114,7 +127,18 @@ fn parse_lt_comparator(filename: impl AsRef<str>) -> Anyhow<Circuit> {
     Ok(circuit)
 }
 
-const COMPARATOR_FILENAME: &str = "./32-bit_less-than-comparator.txt";
+/// Opens a WebRTC datachannel.
+///
+/// Make sure that you have a matchbox server running in the background,
+/// c.f. https://github.com/johanhelsing/matchbox/tree/main/matchbox_server
+///
+/// You can call [`WebRtcSocket::take_raw`] on the returned socket to get a channel to the other
+/// peer which implements [`futures::AsyncRead`] and [`futures::AsyncWrite`].
+///
+/// Make sure to continuously poll the future.
+pub fn web_rtc() -> Anyhow<(WebRtcSocket, MessageLoopFuture)> {
+    Ok(WebRtcSocket::new_reliable(DEFAULT_MATCHBOX))
+}
 
 #[cfg(test)]
 mod tests {

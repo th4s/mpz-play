@@ -1,18 +1,49 @@
-use common::{web_rtc, Role};
+use futures::{select, AsyncRead, AsyncWrite, FutureExt};
 use mpz_common::executor::STExecutor;
 use mpz_garble::{DecodePrivate, Execute, Memory};
 use serio::codec::{Bincode, Codec};
-use std::sync::Arc;
-use yao_millionaire::{millionaire_circuit, setup_garble};
+use std::{sync::Arc, time::Duration};
+use tokio::time::sleep;
+use yao_millionaire::{millionaire_circuit, setup_garble, web_rtc, Role};
 
 const MONEY_BOB: u32 = 2_000_000;
 
-#[tokio::main]
-async fn main() {
-    let mut socket = web_rtc().await.unwrap();
+fn main() {
+    wasm_bindgen_futures::spawn_local(async_main());
+}
 
-    let web_rtc = socket.take_raw().unwrap();
-    let channel = Bincode.new_framed(web_rtc);
+async fn async_main() {
+    console_error_panic_hook::set_once();
+    console_log::init_with_level(log::Level::Debug).unwrap();
+
+    let (mut web_rtc, loop_fut) = web_rtc().unwrap();
+
+    let loop_fut = loop_fut.fuse();
+    let mut loop_fut = std::pin::pin!(loop_fut);
+
+    let millionaire_fut = async {
+        loop {
+            if web_rtc.connected_peers().count() > 0 {
+                break;
+            } else {
+                sleep(Duration::from_millis(500)).await;
+                web_rtc.update_peers();
+            }
+        }
+        let channel = web_rtc.take_raw().unwrap();
+        bob(channel).await
+    }
+    .fuse();
+    let mut millionaire_fut = std::pin::pin!(millionaire_fut);
+
+    select! {
+        _ = &mut millionaire_fut => (),
+        _ = &mut loop_fut => (),
+    }
+}
+
+async fn bob(channel: impl AsyncRead + AsyncWrite + Unpin + Send + Sync + 'static) {
+    let channel = Bincode.new_framed(channel);
 
     let executor = STExecutor::new(channel);
     let mut garble_vm = setup_garble(Role::Bob, executor, 256).await.unwrap();
@@ -24,7 +55,7 @@ async fn main() {
     let is_bob_richer = garble_vm.new_output::<bool>("is_bob_richer").unwrap();
 
     // Assign the money.
-    garble_vm.assign(&money_alice, MONEY_BOB).unwrap();
+    garble_vm.assign(&money_bob, MONEY_BOB).unwrap();
 
     // Load the millionaire circuit.
     let circuit = Arc::new(millionaire_circuit().unwrap());

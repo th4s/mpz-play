@@ -4,7 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-common.workspace = true
 mpz-circuits.workspace = true
 mpz-common.workspace = true
 mpz-garble.workspace = true
@@ -13,7 +12,15 @@ mpz-ot.workspace = true
 futures.workspace = true
 anyhow.workspace = true
 serio.workspace = true
-tokio.workspace = true
+matchbox_socket.workspace = true
+
+tokio = { workspace = true, features = ["time"] }
+getrandom = { version = "0.2", features = ["js"] }
+wasm-bindgen-futures = "0.4"
+wasm-bindgen= "=0.2.92"
+log = "0.4"
+console_error_panic_hook = "0.1.7"
+console_log = "1"
 
 [[bin]]
 name = "alice"

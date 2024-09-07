@@ -23,7 +23,7 @@ mpz-share-conversion = { git = "https://github.com/privacy-scaling-explorations/
 
 common.path = "./common/"
 
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1" }
 tokio-util = { version = "0.7", features = ["full"] }
 futures = "0.3"
 serio = { version = "0.1", features = ["codec", "bincode"] }
