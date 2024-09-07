@@ -3,6 +3,8 @@ use mpz_common::executor::STExecutor;
 use mpz_garble::{DecodePrivate, Execute, Memory};
 use serio::codec::{Bincode, Codec};
 use std::sync::Arc;
+use tokio::time::sleep;
+use web_time::Duration;
 use yao_millionaire::{millionaire_circuit, setup_garble, web_rtc, Role};
 
 const MONEY_ALICE: u32 = 5_000_000;
@@ -25,6 +27,7 @@ async fn async_main() {
             if web_rtc.connected_peers().count() > 0 {
                 break;
             } else {
+                sleep(Duration::from_millis(500)).await;
                 web_rtc.update_peers();
             }
         }
