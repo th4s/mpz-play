@@ -3875,7 +3875,6 @@ dependencies = [
  "mpz-garble",
  "mpz-ot",
  "serio",
- "tokio",
  "wasm-bindgen",
  "wasm-bindgen-futures",
 ]
