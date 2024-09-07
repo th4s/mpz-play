@@ -1,10 +1,10 @@
 use futures::{select, AsyncRead, AsyncWrite, FutureExt};
+use futures_timer::Delay;
+use log::info;
 use mpz_common::executor::STExecutor;
 use mpz_garble::{DecodePrivate, Execute, Memory};
 use serio::codec::{Bincode, Codec};
-use std::sync::Arc;
-use tokio::time::sleep;
-use web_time::Duration;
+use std::{sync::Arc, time::Duration};
 use yao_millionaire::{millionaire_circuit, setup_garble, web_rtc, Role};
 
 const MONEY_ALICE: u32 = 5_000_000;
@@ -27,11 +27,12 @@ async fn async_main() {
             if web_rtc.connected_peers().count() > 0 {
                 break;
             } else {
-                sleep(Duration::from_millis(500)).await;
                 web_rtc.update_peers();
+                Delay::new(Duration::from_millis(1000)).await;
             }
         }
         let channel = web_rtc.take_raw().unwrap();
+        info!("Got channel");
         alice(channel).await
     }
     .fuse();
@@ -44,6 +45,7 @@ async fn async_main() {
 }
 
 async fn alice(channel: impl AsyncRead + AsyncWrite + Unpin + Send + Sync + 'static) {
+    info!("Alice starting garbled circuits");
     let channel = Bincode.new_framed(channel);
 
     let executor = STExecutor::new(channel);
@@ -56,12 +58,14 @@ async fn alice(channel: impl AsyncRead + AsyncWrite + Unpin + Send + Sync + 'sta
     let is_bob_richer = garble_vm.new_output::<bool>("is_bob_richer").unwrap();
 
     // Assign the money.
+    info!("Alice assigining inputs");
     garble_vm.assign(&money_alice, MONEY_ALICE).unwrap();
 
     // Load the millionaire circuit.
     let circuit = Arc::new(millionaire_circuit().unwrap());
 
     // Execute the circuit.
+    info!("Alice executing circuit");
     garble_vm
         .execute(
             circuit,
@@ -72,14 +76,15 @@ async fn alice(channel: impl AsyncRead + AsyncWrite + Unpin + Send + Sync + 'sta
         .unwrap();
 
     // Receive output information from Bob.
+    info!("Alice decoding");
     let mut am_i_richer = garble_vm.decode_private(&[is_alice_richer]).await.unwrap();
     garble_vm.decode_blind(&[is_bob_richer]).await.unwrap();
 
     let am_i_richer: bool = am_i_richer.pop().unwrap().try_into().unwrap();
 
     if am_i_richer {
-        println!("Yes, money, money money!");
+        info!("Yes, money, money money!");
     } else {
-        println!("Oh nooo, I am so poor...");
+        info!("Oh nooo, I am so poor...");
     }
 }

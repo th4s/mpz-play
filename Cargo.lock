@@ -3867,6 +3867,7 @@ dependencies = [
  "console_error_panic_hook",
  "console_log",
  "futures",
+ "futures-timer",
  "getrandom",
  "log",
  "matchbox_socket",
@@ -3875,10 +3876,8 @@ dependencies = [
  "mpz-garble",
  "mpz-ot",
  "serio",
- "tokio",
  "wasm-bindgen",
  "wasm-bindgen-futures",
- "web-time",
 ]
 
 [[package]]
