@@ -30,3 +30,4 @@ serio = { version = "0.1", features = ["codec", "bincode"] }
 uid-mux = { version = "0.1", features = ["serio"] }
 tracing = "0.1"
 anyhow = "1"
+matchbox_socket = { git = "https://github.com/th4s/matchbox", branch = "async-channels"}

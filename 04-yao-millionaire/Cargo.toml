@@ -7,10 +7,11 @@ edition = "2021"
 common.workspace = true
 mpz-circuits.workspace = true
 
-futures = "0.3"
-anyhow = "1"
-serio = { version = "0.1", features = ["codec", "bincode"] }
-tokio = { version = "1", features = ["full"] }
+futures.workspace = true
+anyhow.workspace = true
+serio.workspace = true
+tokio.workspace = true
+matchbox_socket.workspace = true
 
 [[bin]]
 name = "alice"

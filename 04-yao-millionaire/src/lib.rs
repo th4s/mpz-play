@@ -1,29 +1,39 @@
 use std::sync::Arc;
 
 use anyhow::{anyhow, Result as Anyhow};
-use mpz_circuits::{trace, types::ValueType, Circuit, CircuitBuilder};
+use mpz_circuits::{types::ValueType, Circuit, CircuitBuilder};
 
 pub fn millionaire_circuit() -> Anyhow<Circuit> {
     let lt_comparator = parse_lt_comparator(COMPARATOR_FILENAME)?;
     let lt_comparator = Arc::new(lt_comparator);
 
     let builder = CircuitBuilder::new();
-    let a = builder.add_input::<u32>();
-    let b = builder.add_input::<u32>();
+    let alice_input = builder.add_input::<u32>();
+    let bob_input = builder.add_input::<u32>();
 
-    let mut outputs = builder.append(&lt_comparator.clone(), &[a.into(), b.into()])?;
-    let c = outputs
+    let mut output_alice = builder.append(
+        &lt_comparator.clone(),
+        &[bob_input.into(), alice_input.into()],
+    )?;
+    let mut output_bob = builder.append(
+        &lt_comparator.clone(),
+        &[alice_input.into(), bob_input.into()],
+    )?;
+
+    let output_alice = output_alice
+        .pop()
+        .ok_or(anyhow!("Unable to pop circuit output"))?;
+    let output_bob = output_bob
         .pop()
         .ok_or(anyhow!("Unable to pop circuit output"))?;
 
-    builder.add_output(c);
+    builder.add_output(output_alice);
+    builder.add_output(output_bob);
+    let circuit = builder
+        .build()
+        .map_err(|err| anyhow!("Cannot build circuit: {}", err))?;
 
-    todo!()
-}
-
-#[trace]
-fn bitand(a: bool, b: bool) -> bool {
-    a & b
+    Ok(circuit)
 }
 
 fn parse_lt_comparator(filename: impl AsRef<str>) -> Anyhow<Circuit> {
@@ -67,6 +77,25 @@ mod tests {
             assert_eq!(false, is_bob_richer(100, 100));
             assert_eq!(false, is_bob_richer(2_000_000, 1_000_000));
             assert_eq!(false, is_bob_richer(u32::MAX, u32::MAX - 1));
+        }
+    }
+
+    #[test]
+    fn test_millionaire_circuit() {
+        let circuit = millionaire_circuit().unwrap();
+
+        let who_is_richer = |alice: u32, bob: u32| {
+            let wealth_alice: u32 = alice;
+            let wealth_bob: u32 = bob;
+
+            evaluate!(circuit, fn(wealth_alice, wealth_bob) -> (bool, bool)).unwrap()
+        };
+
+        #[allow(clippy::bool_assert_comparison)]
+        {
+            assert_eq!((false, false), who_is_richer(4, 4));
+            assert_eq!((false, true), who_is_richer(2, 4));
+            assert_eq!((true, false), who_is_richer(8, 3));
         }
     }
 }
