@@ -1,7 +1,73 @@
+use anyhow::{anyhow, Result as Anyhow};
+use common::Role;
+use mpz_circuits::{types::ValueType, Circuit, CircuitBuilder};
+use mpz_common::{Allocate, Context, Preprocess};
+use mpz_garble::protocol::deap::DEAPThread;
+use mpz_garble::{config::Role as DEAPRole, DecodePrivate, Execute, Memory};
+use mpz_ot::{
+    chou_orlandi::{
+        Receiver as BaseReceiver, ReceiverConfig as BaseReceiverConfig, Sender as BaseSender,
+        SenderConfig as BaseSenderConfig,
+    },
+    kos::{Receiver, ReceiverConfig, Sender, SenderConfig},
+    OTSetup,
+};
 use std::sync::Arc;
 
-use anyhow::{anyhow, Result as Anyhow};
-use mpz_circuits::{types::ValueType, Circuit, CircuitBuilder};
+/// Sets up a VM for garbled circuits.
+///
+/// # Arguments
+///
+/// * `role` - Set up the vm for either Alice or Bob.
+/// * `context` - A context for IO.
+/// * `ot_count` - How many OTs to set up.
+pub async fn setup_garble(
+    role: Role,
+    mut context: impl Context,
+    ot_count: usize,
+) -> Anyhow<impl Memory + Execute + DecodePrivate> {
+    // Create base OT sender and receiver.
+    let base_sender_config = BaseSenderConfig::builder().build()?;
+    let base_sender = BaseSender::new(base_sender_config);
+
+    let base_receiver_config = BaseReceiverConfig::builder().build()?;
+    let base_receiver = BaseReceiver::new(base_receiver_config);
+
+    // Create OT sender and receiver and set them up.
+    let sender_config = SenderConfig::builder().build()?;
+    let mut sender = Sender::new(sender_config, base_receiver);
+
+    let receiver_config = ReceiverConfig::builder().build()?;
+    let mut receiver = Receiver::new(receiver_config, base_sender);
+
+    let deap_role = match role {
+        Role::Alice => DEAPRole::Leader,
+        Role::Bob => DEAPRole::Follower,
+    };
+
+    sender.alloc(ot_count);
+    receiver.alloc(ot_count);
+
+    if let Role::Alice = role {
+        sender.setup(&mut context).await?;
+        sender.preprocess(&mut context).await?;
+    } else {
+        receiver.setup(&mut context).await?;
+        receiver.preprocess(&mut context).await?;
+    }
+
+    if let Role::Bob = role {
+        sender.setup(&mut context).await?;
+        sender.preprocess(&mut context).await?;
+    } else {
+        receiver.setup(&mut context).await?;
+        receiver.preprocess(&mut context).await?;
+    }
+
+    Ok(DEAPThread::new(
+        deap_role, [0; 32], context, sender, receiver,
+    ))
+}
 
 pub fn millionaire_circuit() -> Anyhow<Circuit> {
     let lt_comparator = parse_lt_comparator(COMPARATOR_FILENAME)?;

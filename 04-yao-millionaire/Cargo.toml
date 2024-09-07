@@ -6,12 +6,14 @@ edition = "2021"
 [dependencies]
 common.workspace = true
 mpz-circuits.workspace = true
+mpz-common.workspace = true
+mpz-garble.workspace = true
+mpz-ot.workspace = true
 
 futures.workspace = true
 anyhow.workspace = true
 serio.workspace = true
 tokio.workspace = true
-matchbox_socket.workspace = true
 
 [[bin]]
 name = "alice"

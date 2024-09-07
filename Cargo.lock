@@ -754,6 +754,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "futures",
+ "matchbox_socket",
  "serio",
  "tokio",
  "tokio-util",
@@ -4022,8 +4023,10 @@ dependencies = [
  "anyhow",
  "common",
  "futures",
- "matchbox_socket",
  "mpz-circuits",
+ "mpz-common",
+ "mpz-garble",
+ "mpz-ot",
  "serio",
  "tokio",
 ]
