@@ -14,70 +14,42 @@
 //! the output.
 
 use anyhow::Error as Anyhow;
-use common::Role;
-use mpz_common::{Allocate, Context, Preprocess};
-use mpz_garble::protocol::deap::DEAPThread;
-use mpz_garble::{config::Role as DEAPRole, DecodePrivate, Execute, Memory};
+use mpz_core::Block;
+use mpz_garble::protocol::semihonest::{Evaluator, Garbler};
+use mpz_memory_core::correlated::Delta;
 use mpz_ot::{
-    chou_orlandi::{
-        Receiver as BaseReceiver, ReceiverConfig as BaseReceiverConfig, Sender as BaseSender,
-        SenderConfig as BaseSenderConfig,
-    },
+    chou_orlandi::{Receiver as BaseReceiver, Sender as BaseSender},
+    cot::{DerandCOTReceiver, DerandCOTSender},
     kos::{Receiver, ReceiverConfig, Sender, SenderConfig},
-    OTSetup,
 };
+use rand::{rngs::StdRng, SeedableRng};
 
-/// Sets up a VM for garbled circuits.
-///
-/// # Arguments
-///
-/// * `role` - Set up the vm for either Alice or Bob.
-/// * `context` - A context for IO.
-/// * `ot_count` - How many OTs to set up.
-pub async fn setup_garble(
-    role: Role,
-    mut context: impl Context,
-    ot_count: usize,
-) -> Result<impl Memory + Execute + DecodePrivate, Anyhow> {
+pub async fn setup_garble() -> Result<
+    (
+        Garbler<DerandCOTSender<Sender<BaseReceiver>>>,
+        Evaluator<DerandCOTReceiver<Receiver<BaseSender>>>,
+    ),
+    Anyhow,
+> {
     // Create base OT sender and receiver.
-    let base_sender_config = BaseSenderConfig::builder().build()?;
-    let base_sender = BaseSender::new(base_sender_config);
+    let base_sender = BaseSender::new();
+    let base_receiver = BaseReceiver::new();
 
-    let base_receiver_config = BaseReceiverConfig::builder().build()?;
-    let base_receiver = BaseReceiver::new(base_receiver_config);
+    let mut rng = StdRng::seed_from_u64(0);
 
-    // Create OT sender and receiver and set them up.
-    let sender_config = SenderConfig::builder().build()?;
-    let mut sender = Sender::new(sender_config, base_receiver);
+    let delta = Block::random(&mut rng);
+    let sender = Sender::new(SenderConfig::default(), delta, base_receiver);
 
     let receiver_config = ReceiverConfig::builder().build()?;
-    let mut receiver = Receiver::new(receiver_config, base_sender);
+    let receiver = Receiver::new(receiver_config, base_sender);
 
-    let deap_role = match role {
-        Role::Alice => DEAPRole::Leader,
-        Role::Bob => DEAPRole::Follower,
-    };
+    // let (cot_sender, cot_receiver) = ideal_cot(delta);
 
-    sender.alloc(ot_count);
-    receiver.alloc(ot_count);
+    let sender = DerandCOTSender::new(sender);
+    let receiver = DerandCOTReceiver::new(receiver);
 
-    if let Role::Alice = role {
-        sender.setup(&mut context).await?;
-        sender.preprocess(&mut context).await?;
-    } else {
-        receiver.setup(&mut context).await?;
-        receiver.preprocess(&mut context).await?;
-    }
+    let garbler = Garbler::new(sender, [0u8; 16], Delta::new(delta));
+    let evaluator = Evaluator::new(receiver);
 
-    if let Role::Bob = role {
-        sender.setup(&mut context).await?;
-        sender.preprocess(&mut context).await?;
-    } else {
-        receiver.setup(&mut context).await?;
-        receiver.preprocess(&mut context).await?;
-    }
-
-    Ok(DEAPThread::new(
-        deap_role, [0; 32], context, sender, receiver,
-    ))
+    Ok((garbler, evaluator))
 }
