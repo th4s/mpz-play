@@ -32,14 +32,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let a2m = receiver.queue_to_multiplicative(&input)?;
     receiver.flush(&mut context).await?;
-    let [a] = a2m.await?.shares.try_into().unwrap();
+    let [factor] = a2m.await?.shares.try_into().unwrap();
 
-    let m2a = receiver.queue_to_additive(&input)?;
+    let m2a = receiver.queue_to_additive(&[factor])?;
     receiver.flush(&mut context).await?;
-    let [x] = m2a.await?.shares.try_into().unwrap();
+    let [summand] = m2a.await?.shares.try_into().unwrap();
 
-    println!("factor: {:?}", a.to_be_bytes());
-    println!("summand: {:?}", x.to_be_bytes());
+    println!("let b = P256::try_from({:?})?;", factor.to_le_bytes());
+    println!("let b = P256::try_from({:?})?;", summand.to_le_bytes());
 
     // // Get the channel and send/receive starting and final numbers.
     // let channel = executor.io_mut();

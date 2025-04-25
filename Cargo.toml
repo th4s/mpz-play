@@ -5,20 +5,33 @@ members = [
     "02-finite-fields",
     "03-garbled-circuits",
     "common",
-    "template"
+    "template",
 ]
 resolver = "2"
 
 [workspace.dependencies]
-mpz-core = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
-mpz-common = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
-mpz-circuits = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
-mpz-garble-core = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
-mpz-garble = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
-mpz-ot = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
-mpz-ole = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
-mpz-fields = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
-mpz-share-conversion = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "b8ae7ac" }
+mpz-core = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
+mpz-common = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
+mpz-circuits = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
+mpz-garble-core = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
+mpz-garble = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
+mpz-ot = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
+mpz-ole = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
+mpz-fields = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
+mpz-share-conversion = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
+mpz-memory-core = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
+mpz-vm-core = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
+# mpz-core = { path = "../mpz/crates/core" }
+# mpz-common = { path = "../mpz/crates/common" }
+# mpz-circuits = { path = "../mpz/crates/circuits" }
+# mpz-garble-core = { path = "../mpz/crates/garble-core" }
+# mpz-garble = { path = "../mpz/crates/garble" }
+# mpz-ot = { path = "../mpz/crates/ot" }
+# mpz-ole = { path = "../mpz/crates/ole" }
+# mpz-fields = { path = "../mpz/crates/fields" }
+# mpz-share-conversion = { path = "../mpz/crates/share-conversion" }
+# mpz-memory-core = { path = "../mpz/crates/memory-core" }
+# mpz-vm-core = { path = "../mpz/crates/vm-core" }
 
 common.path = "./common/"
 
@@ -29,3 +42,4 @@ serio = { version = "0.1", features = ["codec", "bincode"] }
 uid-mux = { version = "0.1", features = ["serio"] }
 tracing = "0.1"
 anyhow = "1"
+rand = "0.9"
