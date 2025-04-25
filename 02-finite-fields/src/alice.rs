@@ -8,6 +8,7 @@ use mpz_share_conversion::{
     AdditiveToMultiplicative, MultiplicativeToAdditive, ShareConversionSender,
 };
 use rand::{rngs::StdRng, SeedableRng};
+use serio::{stream::IoStreamExt, SinkExt};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -40,21 +41,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     sender.flush(&mut context).await?;
     let [summand] = m2a.await?.shares.try_into().unwrap();
 
-    println!("let a = P256::try_from({:?})?;", factor.to_le_bytes());
-    println!("let a = P256::try_from({:?})?;", summand.to_le_bytes());
-
     // Get the channel and send/receive starting and final numbers.
-    // let channel = context.io_mut();
-    // channel.start_send("ok").await.unwrap();
-    // channel.send("ok").await.unwrap();
-    // channel.send("ok").await.unwrap();
+    let channel = context.io_mut();
+    channel.send(input[0]).await?;
+    channel.send(factor).await?;
+    channel.send(summand).await?;
 
-    // let number2: P256 = channel.expect_next().await.unwrap();
-    // let summand2: P256 = channel.expect_next().await.unwrap();
+    let input_bob: P256 = channel.expect_next().await?;
+    let factor2: P256 = channel.expect_next().await?;
+    let summand2: P256 = channel.expect_next().await?;
 
-    // // Check that conversion worked correctly.
-    // println!("Original sum: {:?}", (number + number2).to_be_bytes());
-    // println!("Final sum: {:?}", (summand + summand2).to_be_bytes());
+    // Check that conversion worked correctly.
+    println!("Original sum: {:?}", (input[0] + input_bob).to_be_bytes());
+    println!("Multiplication: {:?}", (factor * factor2).to_be_bytes());
+    println!("Addition: {:?}", (summand + summand2).to_be_bytes());
 
     Ok(())
 }
