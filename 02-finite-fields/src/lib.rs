@@ -13,7 +13,6 @@
 use mpz_core::Block;
 use mpz_ot::{
     chou_orlandi::{Receiver as BaseReceiver, Sender as BaseSender},
-    ferret::{FerretConfig, Receiver as FerretReceiver, Sender as FerretSender},
     kos::{Receiver as KOSReceiver, ReceiverConfig, Sender as KOSSender, SenderConfig},
     rot::{
         any::{AnyReceiver, AnySender},
@@ -23,10 +22,8 @@ use mpz_ot::{
 use rand::{rngs::StdRng, SeedableRng};
 
 /// Sets up an OT sender.
-pub async fn setup_ot_sender() -> Result<
-    AnySender<RandomizeRCOTSender<FerretSender<KOSSender<BaseReceiver>>>>,
-    Box<dyn std::error::Error>,
-> {
+pub async fn setup_ot_sender(
+) -> Result<AnySender<RandomizeRCOTSender<KOSSender<BaseReceiver>>>, Box<dyn std::error::Error>> {
     let mut rng = StdRng::seed_from_u64(0);
 
     let kos_sender = KOSSender::new(
@@ -34,24 +31,17 @@ pub async fn setup_ot_sender() -> Result<
         Block::random(&mut rng),
         BaseReceiver::new(),
     );
-    let ferret_sender =
-        FerretSender::new(FerretConfig::default(), Block::random(&mut rng), kos_sender);
-    let sender = AnySender::new(RandomizeRCOTSender::new(ferret_sender));
+    let sender = AnySender::new(RandomizeRCOTSender::new(kos_sender));
 
     Ok(sender)
 }
 
 /// Sets up an OT receiver.
-pub async fn setup_ot_receiver() -> Result<
-    AnyReceiver<RandomizeRCOTReceiver<FerretReceiver<KOSReceiver<BaseSender>>>>,
-    Box<dyn std::error::Error>,
-> {
-    let mut rng = StdRng::seed_from_u64(0);
-    let delta = Block::random(&mut rng);
-
+pub async fn setup_ot_receiver(
+) -> Result<AnyReceiver<RandomizeRCOTReceiver<KOSReceiver<BaseSender>>>, Box<dyn std::error::Error>>
+{
     let kos_receiver = KOSReceiver::new(ReceiverConfig::default(), BaseSender::new());
-    let ferret_receiver = FerretReceiver::new(FerretConfig::default(), delta, kos_receiver);
-    let receiver = AnyReceiver::new(RandomizeRCOTReceiver::new(ferret_receiver));
+    let receiver = AnyReceiver::new(RandomizeRCOTReceiver::new(kos_receiver));
 
     Ok(receiver)
 }
