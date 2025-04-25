@@ -1,7 +1,7 @@
 use common::{tcp_connect, Role, DEFAULT_LOCAL};
 use garbled_circuits::setup_garble;
 use mpz_circuits::circuits::AES128;
-use mpz_common::{io::Io, Context};
+use mpz_common::Context;
 use mpz_memory_core::{binary::U8, Array, MemoryExt, ViewExt};
 use mpz_vm_core::{Call, CallableExt, Execute};
 
@@ -9,8 +9,7 @@ use mpz_vm_core::{Call, CallableExt, Execute};
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Open a connection.
     let tcp = tcp_connect(Role::Bob, DEFAULT_LOCAL).await?;
-    let io = Io::from_io(tcp);
-    let mut context = Context::from_io(io);
+    let mut context = Context::new_single_threaded(tcp);
 
     // Instantiate a vm for garbled circuits.
     let (_, mut evaluator) = setup_garble().await?;

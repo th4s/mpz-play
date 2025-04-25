@@ -1,15 +1,14 @@
 use common::{tcp_connect, Role, DEFAULT_LOCAL};
-use mpz_common::{io::Io, Context, Flush};
+use mpz_common::{Context, Flush};
 use mpz_ot::{chou_orlandi::Receiver, ot::OTReceiver};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Open a connection.
     let tcp = tcp_connect(Role::Bob, DEFAULT_LOCAL).await.unwrap();
-    let io = Io::from_io(tcp);
 
     // Create an executor.
-    let mut context = Context::from_io(io);
+    let mut context = Context::new_single_threaded(tcp);
 
     // Create an OT receiver.
     let mut receiver = Receiver::new();

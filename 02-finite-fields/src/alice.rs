@@ -14,8 +14,7 @@ use serio::{stream::IoStreamExt, SinkExt};
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Open a connection.
     let tcp = tcp_connect(Role::Alice, DEFAULT_LOCAL).await?;
-    let io = Io::from_io(tcp);
-    let mut context = Context::from_io(io);
+    let mut context = Context::new_single_threaded(tcp);
 
     // Setup OT.
     let ot_sender = setup_ot_sender().await?;

@@ -12,8 +12,7 @@ use serio::{stream::IoStreamExt, SinkExt};
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Open a connection.
     let tcp = tcp_connect(Role::Bob, DEFAULT_LOCAL).await?;
-    let io = Io::from_io(tcp);
-    let mut context = Context::from_io(io);
+    let mut context = Context::new_single_threaded(tcp);
 
     // Setup OT.
     let ot_receiver = setup_ot_receiver().await?;
@@ -30,7 +29,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     MultiplicativeToAdditive::alloc(&mut receiver, input.len())?;
 
     // Perform the conversion.
-
     let a2m = receiver.queue_to_multiplicative(&input)?;
     receiver.flush(&mut context).await?;
     let [factor] = a2m.await?.shares.try_into().unwrap();
