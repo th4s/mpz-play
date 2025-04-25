@@ -21,17 +21,6 @@ mpz-fields = { git = "https://github.com/privacy-scaling-explorations/mpz", rev 
 mpz-share-conversion = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
 mpz-memory-core = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
 mpz-vm-core = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
-# mpz-core = { path = "../mpz/crates/core" }
-# mpz-common = { path = "../mpz/crates/common" }
-# mpz-circuits = { path = "../mpz/crates/circuits" }
-# mpz-garble-core = { path = "../mpz/crates/garble-core" }
-# mpz-garble = { path = "../mpz/crates/garble" }
-# mpz-ot = { path = "../mpz/crates/ot" }
-# mpz-ole = { path = "../mpz/crates/ole" }
-# mpz-fields = { path = "../mpz/crates/fields" }
-# mpz-share-conversion = { path = "../mpz/crates/share-conversion" }
-# mpz-memory-core = { path = "../mpz/crates/memory-core" }
-# mpz-vm-core = { path = "../mpz/crates/vm-core" }
 
 common.path = "./common/"
 
