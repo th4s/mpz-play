@@ -24,32 +24,28 @@ use mpz_ot::{
 };
 use rand::{rngs::StdRng, SeedableRng};
 
-pub async fn setup_garble() -> Result<
-    (
-        Garbler<DerandCOTSender<Sender<BaseReceiver>>>,
-        Evaluator<DerandCOTReceiver<Receiver<BaseSender>>>,
-    ),
-    Anyhow,
-> {
-    // Create base OT sender and receiver.
-    let base_sender = BaseSender::new();
+pub async fn setup_garbler() -> Result<Garbler<DerandCOTSender<Sender<BaseReceiver>>>, Anyhow> {
     let base_receiver = BaseReceiver::new();
 
     let mut rng = StdRng::seed_from_u64(0);
-
     let delta = Block::random(&mut rng);
+
     let sender = Sender::new(SenderConfig::default(), delta, base_receiver);
-
-    let receiver_config = ReceiverConfig::builder().build()?;
-    let receiver = Receiver::new(receiver_config, base_sender);
-
-    // let (cot_sender, cot_receiver) = ideal_cot(delta);
-
     let sender = DerandCOTSender::new(sender);
-    let receiver = DerandCOTReceiver::new(receiver);
 
     let garbler = Garbler::new(sender, [0u8; 16], Delta::new(delta));
+
+    Ok(garbler)
+}
+
+pub async fn setup_evaluator() -> Result<Evaluator<DerandCOTReceiver<Receiver<BaseSender>>>, Anyhow>
+{
+    let base_sender = BaseSender::new();
+
+    let receiver = Receiver::new(ReceiverConfig::default(), base_sender);
+    let receiver = DerandCOTReceiver::new(receiver);
+
     let evaluator = Evaluator::new(receiver);
 
-    Ok((garbler, evaluator))
+    Ok(evaluator)
 }

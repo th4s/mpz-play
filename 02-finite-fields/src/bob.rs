@@ -1,6 +1,6 @@
 use common::{tcp_connect, Role, DEFAULT_LOCAL};
 use finite_fields::setup_ot_receiver;
-use mpz_common::{io::Io, Context, Flush};
+use mpz_common::{Context, Flush};
 use mpz_fields::{p256::P256, Field};
 use mpz_ole::Receiver as OLEReceiver;
 use mpz_share_conversion::{

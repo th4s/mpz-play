@@ -1,5 +1,5 @@
 use common::{tcp_connect, Role, DEFAULT_LOCAL};
-use garbled_circuits::setup_garble;
+use garbled_circuits::setup_evaluator;
 use mpz_circuits::circuits::AES128;
 use mpz_common::Context;
 use mpz_memory_core::{binary::U8, Array, MemoryExt, ViewExt};
@@ -12,7 +12,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut context = Context::new_single_threaded(tcp);
 
     // Instantiate a vm for garbled circuits.
-    let (_, mut evaluator) = setup_garble().await?;
+    let mut evaluator = setup_evaluator().await?;
 
     // Define input types.
     let key: Array<U8, 16> = evaluator.alloc()?;
