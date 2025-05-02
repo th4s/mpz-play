@@ -7,7 +7,6 @@ edition = "2021"
 common.workspace = true
 
 futures.workspace = true
-anyhow.workspace = true
 serio.workspace = true
 tokio.workspace = true
 

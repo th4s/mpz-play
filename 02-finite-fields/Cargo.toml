@@ -14,9 +14,9 @@ mpz-core.workspace = true
 mpz-fields.workspace = true
 
 futures.workspace = true
-anyhow.workspace = true
-serio.workspace = true
 tokio.workspace = true
+serio.workspace = true
+rand.workspace = true
 
 [[bin]]
 name = "alice"

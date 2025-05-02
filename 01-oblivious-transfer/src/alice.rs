@@ -1,31 +1,29 @@
 use common::{tcp_connect, Role, DEFAULT_LOCAL};
-use mpz_common::executor::STExecutor;
+use mpz_common::{Context, Flush};
 use mpz_core::Block;
-use mpz_ot::{
-    chou_orlandi::{Sender, SenderConfig},
-    OTSender, OTSetup,
-};
-use serio::codec::{Bincode, Codec};
+use mpz_ot::{chou_orlandi::Sender, ot::OTSender};
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Open a connection.
-    let tcp = tcp_connect(Role::Alice, DEFAULT_LOCAL).await.unwrap();
-    let channel = Bincode.new_framed(tcp);
+    let tcp = tcp_connect(Role::Alice, DEFAULT_LOCAL).await?;
 
-    // Create an executor.
-    let mut executor = STExecutor::new(channel);
+    // Create a context.
+    let mut context = Context::new_single_threaded(tcp);
 
-    // Create an OT sender and set it up.
-    let sender_config = SenderConfig::default();
-    let mut sender = Sender::new(sender_config);
-
-    sender.setup(&mut executor).await.unwrap();
+    // Create an OT sender.
+    let mut sender = Sender::new();
 
     // Create messages.
-    let zero = Block::ZERO;
-    let one = Block::ONE;
+    let messages = [Block::ZERO, Block::ONES];
 
     // Send OTs to Bob.
-    sender.send(&mut executor, &[[zero, one]]).await.unwrap();
+    sender.alloc(messages.len())?;
+    let output = sender.queue_send_ot(&[messages])?;
+    sender.flush(&mut context).await?;
+
+    let output = output.await?;
+    println!("Alice sent: {:?}", output);
+
+    Ok(())
 }
