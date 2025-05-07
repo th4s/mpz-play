@@ -1,25 +1,28 @@
 use common::{tcp_connect, Role, DEFAULT_LOCAL};
-use garbled_circuits::setup_garble;
-use mpz_common::executor::STExecutor;
-use serio::codec::{Bincode, Codec};
+use garbled_circuits::setup_evaluator;
+use mpz_circuits::circuits::AES128;
+use mpz_common::Context;
+use mpz_memory_core::{binary::U8, Array, MemoryExt, ViewExt};
+use mpz_vm_core::{Call, CallableExt, Execute};
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Open a connection.
-    let tcp = tcp_connect(Role::Bob, DEFAULT_LOCAL).await.unwrap();
-    let channel = Bincode.new_framed(tcp);
+    let tcp = tcp_connect(Role::Bob, DEFAULT_LOCAL).await?;
 
-    // Create an executor and use it to instantiate a vm for garbled circuits.
-    let executor = STExecutor::new(channel);
-    let mut _garble_vm = setup_garble(Role::Bob, executor, 256).await.unwrap();
+    // Instantiate a vm for garbled circuits.
 
-    // Define input and output types.
+    // Define input types.
+
+    // Define input visibility.
+
+    // Define output.
 
     // Assign the message.
 
-    // Load the AES circuit.
+    // Commit the values
 
     // Execute the circuit.
 
-    // Send output information to Alice.
+    Ok(())
 }
