@@ -13,6 +13,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Choose a number.
 
+    // Allocate space for pre-processing.
+
     // Perform the conversion.
 
     // Get the channel and send/receive starting and final numbers.
