@@ -2,9 +2,9 @@
 async fn main() {
     // Open a connection and create a channel.
 
-    // Create an executor.
+    // Create a context.
 
-    // Create an OT sender and set it up.
+    // Create an OT sender.
 
     // Create messages.
 

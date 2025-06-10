@@ -10,51 +10,38 @@
 //! again. In the end check that both sums are equal by sending over the missing summands to each
 //! other.
 
-use anyhow::Error as Anyhow;
-use mpz_common::Context;
+use mpz_core::Block;
 use mpz_ot::{
-    chou_orlandi::{
-        Receiver as BaseReceiver, ReceiverConfig as BaseReceiverConfig, Sender as BaseSender,
-        SenderConfig as BaseSenderConfig,
+    chou_orlandi::{Receiver as BaseReceiver, Sender as BaseSender},
+    kos::{Receiver as KOSReceiver, ReceiverConfig, Sender as KOSSender, SenderConfig},
+    rot::{
+        any::{AnyReceiver, AnySender},
+        randomize::{RandomizeRCOTReceiver, RandomizeRCOTSender},
     },
-    kos::{Receiver, ReceiverConfig, Sender, SenderConfig},
-    OTSetup,
 };
+use rand::{rngs::StdRng, SeedableRng};
 
 /// Sets up an OT sender.
-///
-/// # Arguments
-///
-/// * `context` - A context for IO.
-pub async fn setup_ot_sender(context: &mut impl Context) -> Result<Sender<BaseReceiver>, Anyhow> {
-    // Create a base OT receiver.
-    let base_receiver_config = BaseReceiverConfig::builder().build()?;
-    let base_receiver = BaseReceiver::new(base_receiver_config);
+pub async fn setup_ot_sender(
+) -> Result<AnySender<RandomizeRCOTSender<KOSSender<BaseReceiver>>>, Box<dyn std::error::Error>> {
+    let mut rng = StdRng::seed_from_u64(0);
 
-    // Create an OT sender and set it up.
-    let sender_config = SenderConfig::builder().build()?;
-    let mut sender = Sender::new(sender_config, base_receiver);
-
-    sender.setup(context).await?;
+    let kos_sender = KOSSender::new(
+        SenderConfig::default(),
+        Block::random(&mut rng),
+        BaseReceiver::new(),
+    );
+    let sender = AnySender::new(RandomizeRCOTSender::new(kos_sender));
 
     Ok(sender)
 }
 
 /// Sets up an OT receiver.
-///
-/// # Arguments
-///
-/// * `context` - A context for IO.
-pub async fn setup_ot_receiver(context: &mut impl Context) -> Result<Receiver<BaseSender>, Anyhow> {
-    // Create a base OT sender.
-    let base_sender_config = BaseSenderConfig::builder().build()?;
-    let base_sender = BaseSender::new(base_sender_config);
-
-    // Create an OT receiver and set it up.
-    let receiver_config = ReceiverConfig::builder().build()?;
-    let mut receiver = Receiver::new(receiver_config, base_sender);
-
-    receiver.setup(context).await?;
+pub async fn setup_ot_receiver(
+) -> Result<AnyReceiver<RandomizeRCOTReceiver<KOSReceiver<BaseSender>>>, Box<dyn std::error::Error>>
+{
+    let kos_receiver = KOSReceiver::new(ReceiverConfig::default(), BaseSender::new());
+    let receiver = AnyReceiver::new(RandomizeRCOTReceiver::new(kos_receiver));
 
     Ok(receiver)
 }

@@ -10,8 +10,6 @@ mpz-common.workspace = true
 mpz-core.workspace = true
 
 futures.workspace = true
-anyhow.workspace = true
-serio.workspace = true
 tokio.workspace = true
 
 [[bin]]
