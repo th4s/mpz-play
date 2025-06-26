@@ -4,6 +4,7 @@ members = [
     "01-oblivious-transfer",
     "02-finite-fields",
     "03-garbled-circuits",
+    "04-quicksilver",
     "common",
     "template",
 ]
@@ -21,6 +22,7 @@ mpz-fields = { git = "https://github.com/privacy-scaling-explorations/mpz", rev 
 mpz-share-conversion = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
 mpz-memory-core = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
 mpz-vm-core = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
+mpz-zk = { git = "https://github.com/privacy-scaling-explorations/mpz", rev = "8f2efd6" }
 
 common.path = "./common/"
 
@@ -32,3 +34,4 @@ uid-mux = { version = "0.1", features = ["serio"] }
 tracing = "0.1"
 anyhow = "1"
 rand = "0.9"
+itybity = "0.3"

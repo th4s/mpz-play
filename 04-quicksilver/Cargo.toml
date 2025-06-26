@@ -1,0 +1,30 @@
+[package]
+name = "quicksilver"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+common.workspace = true
+mpz-common.workspace = true
+mpz-ot.workspace = true
+mpz-garble.workspace = true
+mpz-circuits.workspace = true
+mpz-core.workspace = true
+mpz-memory-core.workspace = true
+mpz-vm-core.workspace = true
+mpz-zk.workspace = true
+
+futures.workspace = true
+anyhow.workspace = true
+tokio.workspace = true
+uid-mux.workspace = true
+rand.workspace = true
+itybity.workspace = true
+
+[[bin]]
+name = "alice"
+path = "src/alice.rs"
+
+[[bin]]
+name = "bob"
+path = "src/bob.rs"
