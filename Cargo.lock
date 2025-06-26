@@ -1218,6 +1218,43 @@ dependencies = [
 ]
 
 [[package]]
+name = "mpz-zk"
+version = "0.1.0"
+source = "git+https://github.com/privacy-scaling-explorations/mpz?rev=8f2efd6#8f2efd63ba1d0c01b4e102dd46215a715e650f36"
+dependencies = [
+ "async-trait",
+ "blake3",
+ "futures",
+ "mpz-common",
+ "mpz-core",
+ "mpz-ot",
+ "mpz-vm-core",
+ "mpz-zk-core",
+ "serio 0.2.0",
+ "thiserror",
+ "tlsn-utils",
+]
+
+[[package]]
+name = "mpz-zk-core"
+version = "0.1.0"
+source = "git+https://github.com/privacy-scaling-explorations/mpz?rev=8f2efd6#8f2efd63ba1d0c01b4e102dd46215a715e650f36"
+dependencies = [
+ "blake3",
+ "cfg-if",
+ "itybity",
+ "mpz-circuits",
+ "mpz-core",
+ "mpz-memory-core",
+ "mpz-vm-core",
+ "rayon",
+ "serde",
+ "thiserror",
+ "tlsn-utils",
+ "zerocopy 0.8.25",
+]
+
+[[package]]
 name = "nohash-hasher"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1367,6 +1404,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "02b3e5e68a3a1a02aad3ec490a98007cbc13c37cbe84a3cd7b8e406d76e7f778"
 dependencies = [
  "unicode-ident",
+]
+
+[[package]]
+name = "quicksilver"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "common",
+ "futures",
+ "itybity",
+ "mpz-circuits",
+ "mpz-common",
+ "mpz-core",
+ "mpz-garble",
+ "mpz-memory-core",
+ "mpz-ot",
+ "mpz-vm-core",
+ "mpz-zk",
+ "rand 0.9.1",
+ "tokio",
+ "uid-mux 0.1.0",
 ]
 
 [[package]]
